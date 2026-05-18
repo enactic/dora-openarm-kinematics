@@ -65,7 +65,8 @@ Solves joint angles from EE pose targets using mink's QP-based differential IK. 
 Reads joint angles from a physical leader arm and publishes end-effector poses. Requires a connected leader device.
 
 ```bash
-dora run config/dataflow-dummy-fk.yaml
+uv run dora build config/dataflow-dummy-fk.yaml --uv
+uv run dora run config/dataflow-dummy-fk.yaml --uv
 ```
 
 ---
@@ -75,7 +76,8 @@ dora run config/dataflow-dummy-fk.yaml
 Pipes FK output directly back into IK to verify the solver round-trips correctly. No physical hardware needed beyond the leader.
 
 ```bash
-dora run config/dataflow-dummy-ik.yaml
+uv run dora build config/dataflow-dummy-ik.yaml --uv
+uv run dora run config/dataflow-dummy-ik.yaml --uv
 ```
 
 **Dataflow:** `leader` → `fk` (joints → poses) → `ik` (poses → joints) → `viewer`

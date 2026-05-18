@@ -43,4 +43,4 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.uv.sources]
-openarm-control = { git = "ssh://git@github.com/reazon-research/openarm_control.git" }
+openarm-control = { git = "https://github.com/enactic/openarm_control" }

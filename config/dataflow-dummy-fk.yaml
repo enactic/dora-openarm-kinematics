@@ -53,7 +53,7 @@ nodes:
   - id: viewer   # ── optional: visualise leader pose ──────────────────────────
     build: pip install git+https://github.com/enactic/dora-openarm-mujoco.git
     path: dora-openarm-mujoco
-    args: "--ctrl --enable-collision --viewer"
+    args: "--viewer"
     inputs:
       position_right: leader/follower_position_right
       position_left:  leader/follower_position_left
