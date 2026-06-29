@@ -54,20 +54,32 @@ def _run(args: argparse.Namespace) -> None:
         if eid == "position_right" and "right" in kin.setup.sides:
             values = np.array(event["value"], dtype=np.float32)
             if values.shape != (8,):
-                print(f"Warning: expected position_right[8], got {values.shape}. Skipping.")
+                print(
+                    f"Warning: expected position_right[8], got {values.shape}. Skipping."
+                )
                 continue
             t0 = time.perf_counter()
             pose = kin.fk("right", values)
-            node.send_output("pose_right", pa.array(pose, type=pa.float32()), {"timestamp": time.time_ns()})
+            node.send_output(
+                "pose_right",
+                pa.array(pose, type=pa.float32()),
+                {"timestamp": time.time_ns()},
+            )
 
         elif eid == "position_left" and "left" in kin.setup.sides:
             values = np.array(event["value"], dtype=np.float32)
             if values.shape != (8,):
-                print(f"Warning: expected position_left[8], got {values.shape}. Skipping.")
+                print(
+                    f"Warning: expected position_left[8], got {values.shape}. Skipping."
+                )
                 continue
             t0 = time.perf_counter()
             pose = kin.fk("left", values)
-            node.send_output("pose_left", pa.array(pose, type=pa.float32()), {"timestamp": time.time_ns()})
+            node.send_output(
+                "pose_left",
+                pa.array(pose, type=pa.float32()),
+                {"timestamp": time.time_ns()},
+            )
 
         else:
             continue
