@@ -53,7 +53,7 @@ def _map_trigger_to_gripper(trigger: float, side: str) -> float:
     if side == "right":
         return (-1.57 / 2.0) * (1.0 - trigger)  # 0→-1.57, 1→0
     else:
-        return (1.57 / 2.0) * (1.0 - trigger)   # 0→ 1.57, 1→0
+        return (1.57 / 2.0) * (1.0 - trigger)  # 0→ 1.57, 1→0
 
 
 def _run(args: argparse.Namespace) -> None:
@@ -76,13 +76,17 @@ def _run(args: argparse.Namespace) -> None:
 
         if eid == "target_right" and "right" in kin.setup.sides:
             if values.shape != (7,):
-                print(f"Warning: expected target_right[7], got {values.shape}. Skipping.")
+                print(
+                    f"Warning: expected target_right[7], got {values.shape}. Skipping."
+                )
                 continue
             kin.set_target("right", values)
 
         elif eid == "target_left" and "left" in kin.setup.sides:
             if values.shape != (7,):
-                print(f"Warning: expected target_left[7], got {values.shape}. Skipping.")
+                print(
+                    f"Warning: expected target_left[7], got {values.shape}. Skipping."
+                )
                 continue
             kin.set_target("left", values)
 
@@ -105,8 +109,8 @@ def _run(args: argparse.Namespace) -> None:
             continue
 
         ts = {"timestamp": time.time_ns()}
-        node.send_output("position_right", pa.array(result[:8],  type=pa.float32()), ts)
-        node.send_output("position_left",  pa.array(result[8:16], type=pa.float32()), ts)
+        node.send_output("position_right", pa.array(result[:8], type=pa.float32()), ts)
+        node.send_output("position_left", pa.array(result[8:16], type=pa.float32()), ts)
 
 
 def main() -> None:
