@@ -18,10 +18,10 @@ Accepts end-effector pose targets and solves joint angles via mink's QP-based
 differential IK. Both arms share one mink.Configuration and one QP solve per
 step.
 
-Pose convention:  float32[7] = [px, py, pz, qw, qx, qy, qz]
+Pose convention:  float32[8] = [px, py, pz, qw, qx, qy, qz, gripper_angle]
 Inputs:
-  target_right – [{"pose": float32[7]}]  right EE target pose
-  target_left  – [{"pose": float32[7]}]  left  EE target pose
+  target_right – [{"pose": float32[8]}]  right EE target pose + gripper angle
+  target_left  – [{"pose": float32[8]}]  left  EE target pose + gripper angle
   position     – [{"qpos": float32[16]}] current joint state right[8]+left[8]
                  (optional sync)
   Flat float32 arrays are also accepted for all inputs.
@@ -65,14 +65,6 @@ def extract_values(value: pa.Array, key: str) -> np.ndarray:
     return np.array(value, dtype=np.float32)
 
 
-def _map_trigger_to_gripper(trigger: float, side: str) -> float:
-    """trigger 0.0~1.0 → gripper angle"""
-    if side == "right":
-        return (-1.57 / 2.0) * (1.0 - trigger)  # 0→-1.57, 1→0
-    else:
-        return (1.57 / 2.0) * (1.0 - trigger)  # 0→ 1.57, 1→0
-
-
 def _run(args: argparse.Namespace) -> None:
     kin = Kinematics(setup_from_args(args), ik_params_from_args(args))
 
@@ -93,31 +85,27 @@ def _run(args: argparse.Namespace) -> None:
 
         if eid == "target_right" and "right" in kin.setup.sides:
             values = extract_values(event["value"], "pose")
-            if values.shape != (7,):
+            pose = values[:7]
+            gripper_angle = values[7]
+            if pose.shape != (7,):
                 print(
                     f"Warning: expected target_right[7], got {values.shape}. Skipping."
                 )
                 continue
-            kin.set_target("right", values)
+            kin.set_target("right", pose)
+            kin.set_gripper("right", gripper_angle)
 
         elif eid == "target_left" and "left" in kin.setup.sides:
             values = extract_values(event["value"], "pose")
-            if values.shape != (7,):
+            pose = values[:7]
+            gripper_angle = values[7]
+            if pose.shape != (7,):
                 print(
                     f"Warning: expected target_left[7], got {values.shape}. Skipping."
                 )
                 continue
             kin.set_target("left", values)
-
-        elif eid == "trigger_right":
-            values = np.array(event["value"], dtype=np.float32)
-            kin.set_gripper("right", _map_trigger_to_gripper(float(values[0]), "right"))
-            continue
-
-        elif eid == "trigger_left":
-            values = np.array(event["value"], dtype=np.float32)
-            kin.set_gripper("left", _map_trigger_to_gripper(float(values[0]), "left"))
-            continue
+            kin.set_gripper("left", gripper_angle)
 
         else:
             continue
