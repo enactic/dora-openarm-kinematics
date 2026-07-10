@@ -33,6 +33,7 @@ Outputs:
 """
 
 from __future__ import annotations
+from scipy.constants import value
 
 import argparse
 import time
@@ -85,26 +86,26 @@ def _run(args: argparse.Namespace) -> None:
 
         if eid == "target_right" and "right" in kin.setup.sides:
             values = extract_values(event["value"], "pose")
-            pose = values[:7]
-            gripper_angle = values[7]
-            if pose.shape != (7,):
+            if values.shape != (7,):
                 print(
-                    f"Warning: expected target_right[7], got {values.shape}. Skipping."
+                    f"Warning: expected target_right[8], got {values.shape}. Skipping."
                 )
                 continue
+            pose = values[:7]
+            gripper_angle = values[7]
             kin.set_target("right", pose)
             kin.set_gripper("right", gripper_angle)
 
         elif eid == "target_left" and "left" in kin.setup.sides:
             values = extract_values(event["value"], "pose")
-            pose = values[:7]
-            gripper_angle = values[7]
-            if pose.shape != (7,):
+            if values.shape != (8,):
                 print(
-                    f"Warning: expected target_left[7], got {values.shape}. Skipping."
+                    f"Warning: expected target_left[8], got {values.shape}. Skipping."
                 )
                 continue
-            kin.set_target("left", values)
+            pose = values[:7]
+            gripper_angle = values[7]
+            kin.set_target("left", pose)
             kin.set_gripper("left", gripper_angle)
 
         else:

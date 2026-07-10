@@ -23,8 +23,8 @@ Inputs:
   Flat float32 arrays are also accepted.
 
 Outputs:
-  pose_right – [{"pose": float32[7]}]  [px, py, pz, qw, qx, qy, qz]
-  pose_left  – [{"pose": float32[7]}]  [px, py, pz, qw, qx, qy, qz]
+  pose_right – [{"pose": float32[8]}]  [px, py, pz, qw, qx, qy, qz, gripper_value]
+  pose_left  – [{"pose": float32[8]}]  [px, py, pz, qw, qx, qy, qz, gripper_value]
   status     – ["ready"] on startup
 """
 
@@ -75,9 +75,10 @@ def _run(args: argparse.Namespace) -> None:
                 continue
             t0 = time.perf_counter()
             pose = kin.fk("right", values)
+            gripper_value = values[7]  # last value is gripper
             node.send_output(
                 "pose_right",
-                pose_struct(pose),
+                pose_struct(np.concatenate([pose, [gripper_value]])),
                 {"timestamp": time.time_ns()},
             )
 
@@ -90,9 +91,10 @@ def _run(args: argparse.Namespace) -> None:
                 continue
             t0 = time.perf_counter()
             pose = kin.fk("left", values)
+            gripper_value = values[7]  # last value is gripper
             node.send_output(
                 "pose_left",
-                pose_struct(pose),
+                pose_struct(np.concatenate([pose, [gripper_value]])),
                 {"timestamp": time.time_ns()},
             )
 
