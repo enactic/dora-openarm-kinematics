@@ -33,7 +33,6 @@ Outputs:
 """
 
 from __future__ import annotations
-from scipy.constants import value
 
 import argparse
 import time
@@ -86,7 +85,7 @@ def _run(args: argparse.Namespace) -> None:
 
         if eid == "target_right" and "right" in kin.setup.sides:
             values = extract_values(event["value"], "pose")
-            if values.shape != (7,):
+            if values.shape != (8,):
                 print(
                     f"Warning: expected target_right[8], got {values.shape}. Skipping."
                 )
@@ -124,6 +123,7 @@ def _run(args: argparse.Namespace) -> None:
 
 
 def main() -> None:
+    """Inverse kinematics for OpenArm."""
     parser = argparse.ArgumentParser(
         description="Mink IK dora node – OpenArm end-effector pose → joint angles"
     )
