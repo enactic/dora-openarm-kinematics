@@ -20,7 +20,7 @@ Converts per-arm joint angles to end-effector poses via `mj_forward`.
 | | |
 |---|---|
 | **Inputs** | `position_right`, `position_left` `[{"qpos": float32[8]}]` — joints 1–7 + gripper (flat `float32[8]` also accepted) |
-| **Outputs** | `pose_right`, `pose_left` `[{"pose": float32[7]}]` — `[px, py, pz, qw, qx, qy, qz]` |
+| **Outputs** | `pose_right`, `pose_left` `[{"pose": float32[8]}]` — `[px, py, pz, qw, qx, qy, qz, gripper_value]` |
 
 ```
 --mode           right | left | bimanual  (default: bimanual)
