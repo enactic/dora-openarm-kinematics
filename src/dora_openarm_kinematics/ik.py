@@ -53,7 +53,7 @@ from openarm_control import (
 _QPOS_STRUCT_TYPE = pa.struct({"qpos": pa.list_(pa.float32())})
 
 
-def qpos_struct(qpos: np.ndarray) -> pa.Array:
+def build_qpos_output(qpos: np.ndarray) -> pa.Array:
     """Wrap joint angles as a length-1 StructArray: [{"qpos": [...]}]."""
     return pa.array([{"qpos": qpos}], type=_QPOS_STRUCT_TYPE)
 
@@ -118,8 +118,8 @@ def _run(args: argparse.Namespace) -> None:
             continue
 
         ts = {"timestamp": time.time_ns()}
-        node.send_output("position_right", qpos_struct(result[:8]), ts)
-        node.send_output("position_left", qpos_struct(result[8:16]), ts)
+        node.send_output("position_right", build_qpos_output(result[:8]), ts)
+        node.send_output("position_left", build_qpos_output(result[8:16]), ts)
 
 
 def main() -> None:

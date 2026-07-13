@@ -40,7 +40,7 @@ from openarm_control import Kinematics, register_common_args, setup_from_args
 _POSE_STRUCT_TYPE = pa.struct({"pose": pa.list_(pa.float32())})
 
 
-def pose_struct(pose: np.ndarray) -> pa.Array:
+def build_pose_output(pose: np.ndarray) -> pa.Array:
     """Wrap a pose array as a length-1 StructArray: [{"pose": [...]}]."""
     return pa.array([{"pose": pose}], type=_POSE_STRUCT_TYPE)
 
@@ -78,7 +78,9 @@ def _run(args: argparse.Namespace) -> None:
             gripper_value = values[7]  # last value is gripper
             node.send_output(
                 "pose_right",
-                pose_struct(np.concatenate([pose, [gripper_value]])),
+                build_pose_output(
+                    np.concatenate([pose, np.array([gripper_value], dtype=np.float32)])
+                ),
                 {"timestamp": time.time_ns()},
             )
 
@@ -94,7 +96,9 @@ def _run(args: argparse.Namespace) -> None:
             gripper_value = values[7]  # last value is gripper
             node.send_output(
                 "pose_left",
-                pose_struct(np.concatenate([pose, [gripper_value]])),
+                build_pose_output(
+                    np.concatenate([pose, np.array([gripper_value], dtype=np.float32)])
+                ),
                 {"timestamp": time.time_ns()},
             )
 
