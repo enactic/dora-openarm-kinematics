@@ -61,12 +61,12 @@ nodes:
       - status
 
   - id: viewer   # ── optional: visualise leader pose ──────────────────────────
-    build: pip install git+https://github.com/enactic/dora-openarm-mujoco.git
+    build: pip install "dora-openarm-mujoco>=0.5.0"
     path: dora-openarm-mujoco
     args: "--viewer"
     inputs:
-      position_right: ik/position_right
-      position_left:  ik/position_left
+      move_position_right: ik/position_right
+      move_position_left:  ik/position_left
       # pose_right: fk/pose_right
       # pose_left: fk/pose_left
     outputs:
